@@ -29,11 +29,11 @@ if(Meteor.isClient) {
     },
     'click .increment': function() {
       var selectedPlayer = Session.get('selectedPlayer');
-      PlayersList.update({ _id: selectedPlayer}, {$inc: { score: 5}} );
+      Meteor.call('updateScore', selectedPlayer, 1);
     },
     'click .decrement': function() {
       var selectedPlayer = Session.get('selectedPlayer');
-      PlayersList.update({ _id: selectedPlayer}, {$inc: { score: -5}} );
+      Meteor.call('updateScore', selectedPlayer, -1);
     },
     'click .remove': function() {
       var selectedPlayer = Session.get('selectedPlayer');
@@ -56,7 +56,7 @@ if(Meteor.isClient) {
 if(Meteor.isServer) {
   Meteor.publish('thePlayer', function() {
     var currentUserId = this.userId;
-    return PlayersList.find({createdBy: currentUserId});
+    return PlayersList.find({createdBy: currentUserId} , {sort: {score: -1, name: 1}});
   })
 
 }
@@ -78,6 +78,14 @@ Meteor.methods({
     var currentUserId = Meteor.userId();
     if(currentUserId) {
       PlayersList.remove({_id: selectedPlayer, createdBy: currentUserId});
+    }
+  },
+  'updateScore': function(selectedPlayer, scoreGoals) {
+    check(selectedPlayer, String);
+    check(scoreGoals, Number);
+    var currentUserId = Meteor.userId();
+    if(currentUserId) {
+      PlayersList.update({ _id: selectedPlayer, createdBy: currentUserId}, {$inc: { score: scoreGoals}} );
     }
   }
 });
