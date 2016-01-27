@@ -1,33 +1,35 @@
 <head>
-  <title>Leaderboard</title>
+  <title>Capocannoniere</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 </head>
 <body>
-  <h1>Leaderboard</h1>
-  {{> loginButtons}}
-  {{#if currentUser}}
-    {{> leaderboard}}
-  {{else}}
-    <p>Register to keep track of goals scored</p>
-  {{/if}}
+  <div class="container">
+    <h1>Capocannoniere</h1>
+    {{> loginButtons}}
+    {{#if currentUser}}
+      {{> leaderboard}}
+    {{else}}
+      <p>Register to create your leaderboard.</p>
+    {{/if}}
+  </div>
 </body>
 
 <template name="leaderboard">
-  {{>addPlayerForm}}
+
+    {{>addPlayerForm}}
+
   <p>
-    <ul>
+    {{#if selectedPlayer}}
+      <h3>Selected Player: {{selectedPlayer.name}}</h3>
+      <button class="increment">Scored 1 Goal</button>
+      <button class="decrement">Remove Goal</button>
+      <button class="remove">Remove Player</button>
+    {{/if}}
+
+    <ul class="main-list">
       {{#each player}}
-        <li class="player {{selectedClass}}">{{name}}: {{score}}</li>
+        <li class="player"><span class="{{selectedClass}}">{{name}}: {{score}}</span></li>
       {{/each}}
-      {{#if selectedPlayer}}
-      <li>
-        <button class="increment">Scored 1 Goal</button>
-        <button class="decrement">Remove Goal</button>
-        <button class="remove">Remove Player</button>
-      </li>
-      <li>
-        Selected Player: {{selectedPlayer.name}}
-      </li>
-      {{/if}}
     </ul>
 
   </p>
@@ -36,7 +38,11 @@
 
 <template name="addPlayerForm">
   <form>
-    <input type="text" name="playerName">
-    <input type="submit" value="Add Player">
+    <div>
+      <input type="text" name="playerName">
+    </div>
+    <div>
+      <input type="submit" value="Add Player">
+    </div>
   </form>
 </template>
